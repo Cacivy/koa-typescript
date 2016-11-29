@@ -22,6 +22,7 @@
     "mongoose": "^4.7.0"
   },
   "devDependencies": {
+    "@types/koa-bodyparser": "^3.0.20",
     "@types/koa-router": "^7.0.21",
     "@types/mongoose": "^4.6.1",
     "@types/node": "^6.0.51",

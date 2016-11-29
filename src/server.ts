@@ -22,14 +22,14 @@ app.use(convert(logger()))
 app.use(require('koa-static')(__dirname + '/../static'))
 
 // db
-const mongoose = require('mongoose')
+import mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost:27017/blog')
 
 // router
-const fs = require('fs')
-const koarouter = require('koa-router')
-var router = koarouter()
+import fs = require('fs')
+import koarouter = require('koa-router')
+const router = new koarouter()
 fs.readdirSync(__dirname + '/controller').forEach((file) => {
 	let path = file.split('.')
 	let name = path[0]
@@ -38,12 +38,12 @@ fs.readdirSync(__dirname + '/controller').forEach((file) => {
 		router.use(`/${name}`, route.routes(), route.allowedMethods())
 	}
 })
-const index = require('./controller/index');
+import index = require('./controller/index');
 router.use('/', index.routes(), index.allowedMethods());
 app.use(router.routes(), router.allowedMethods());
 
 // server
-const http = require('http')
+import http = require('http')
 var port = process.env.PORT || '8080'
 var server = http.createServer(app.callback())
 server.listen(port)

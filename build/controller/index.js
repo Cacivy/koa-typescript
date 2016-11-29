@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -6,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-var router = require('koa-router')();
+const koaRouter = require('koa-router');
+const router = new koaRouter();
 router.get('/', function (ctx, next) {
     return __awaiter(this, void 0, void 0, function* () {
         yield ctx.render('index');

@@ -1,4 +1,6 @@
-var router = require('koa-router')()
+import koaRouter = require('koa-router')
+const router = new koaRouter()
+import url = require('url')
 import Post from '../model/post'
 import {resBody, resError, resInfo} from '../util/response'
 

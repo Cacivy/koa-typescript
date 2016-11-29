@@ -1,7 +1,8 @@
-var router = require('koa-router')()
+import koaRouter = require('koa-router')
+const router = new koaRouter()
 
-router.get('/', async function (ctx, next) {
-	await ctx.render('index');
-});
+router.get('/', async function (ctx: koaRouter.IRouterContext, next) {
+	await ctx.render('index')
+})
 
-module.exports = router;
+export = router

@@ -1,3 +1,4 @@
+"use strict";
 const Koa = require('koa');
 const app = new Koa();
 app.on('error', (err, ctx) => {
@@ -25,7 +26,7 @@ mongoose.connect('mongodb://localhost:27017/blog');
 // router
 const fs = require('fs');
 const koarouter = require('koa-router');
-var router = koarouter();
+const router = new koarouter();
 fs.readdirSync(__dirname + '/controller').forEach((file) => {
     let path = file.split('.');
     let name = path[0];

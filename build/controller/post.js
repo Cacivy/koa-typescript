@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-var router = require('koa-router')();
+const koaRouter = require('koa-router');
+const router = new koaRouter();
 const post_1 = require('../model/post');
 const response_1 = require('../util/response');
 router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
