@@ -10,7 +10,9 @@
             "name": "启动程序",
             "program": "${workspaceRoot}\\build\\server.js",
             "cwd": "${workspaceRoot}",
-            "outFiles": [],
+            "outFiles": [
+				"${workspaceRoot}\\build\\**\\*.js"
+			],
             "sourceMaps": true
         },
         {

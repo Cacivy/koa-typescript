@@ -10,6 +10,13 @@ interface PostModel {
 	content: String
 }
 
+interface Query {
+	limit: number
+	sort?: string
+	page: number
+	pagesize: number
+}
+
 router.get('/:id', async (ctx, next) => {
 	let id = ctx.params.id
 
@@ -21,8 +28,19 @@ router.get('/:id', async (ctx, next) => {
 })
 
 router.get('/', async (ctx, next) => {
-	await Post.find({}).then((docs) => {
-		ctx.body = resBody(docs)
+	let path = url.parse(ctx.request.url, true)
+	let query:Query = path.query as Query
+	let start = (+query.page - 1) * +query.pagesize;
+
+	let total = await Post.count({}).then((res: number) => {
+		return res
+	})
+	await Post.find()
+	.skip(start)
+	.limit(+query.limit)
+	.sort(query.sort)
+	.then((docs) => {
+		ctx.body = resBody(docs, total)
 	}).catch((reason) => {
 		ctx.body = resError(reason)
 	})

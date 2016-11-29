@@ -9,10 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const koaRouter = require('koa-router');
 const router = new koaRouter();
-router.get('/', function (ctx, next) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield ctx.render('index');
-    });
-});
+router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+    yield ctx.render('index');
+}));
 module.exports = router;
 //# sourceMappingURL=index.js.map

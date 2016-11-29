@@ -14,12 +14,12 @@ const logger = (type: LogType, msg: any) => {
 	let time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 	let buf: Buffer = new Buffer(`
 	time: ${day} ${time}
-	type: ${type}
+	type: ${LogType[type]}
 	msg: ${msg}
 	------------------------------
 	`)
 
-	let path = `${__dirname}'/../log/${day}.txt`
+	let path = `${__dirname}'/../../logs/${day}.txt`
 	fs.readFile(path, (err, data:Buffer) => {
 		if (!data) {
 			fs.writeFileSync(path, buf)

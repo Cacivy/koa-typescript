@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const koaRouter = require('koa-router');
 const router = new koaRouter();
+const url = require('url');
 const post_1 = require('../model/post');
 const response_1 = require('../util/response');
 router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -20,8 +21,18 @@ router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     });
 }));
 router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    yield post_1.default.find({}).then((docs) => {
-        ctx.body = response_1.resBody(docs);
+    let path = url.parse(ctx.request.url, true);
+    let query = path.query;
+    let start = (+query.page - 1) * +query.pagesize;
+    let total = yield post_1.default.count({}).then((res) => {
+        return res;
+    });
+    yield post_1.default.find()
+        .skip(start)
+        .limit(+query.limit)
+        .sort(query.sort)
+        .then((docs) => {
+        ctx.body = response_1.resBody(docs, total);
     }).catch((reason) => {
         ctx.body = response_1.resError(reason);
     });
