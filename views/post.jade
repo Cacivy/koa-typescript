@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	h1 Post
+	table
+		tr
+			th index
+			th name
+			th author
+			th content
+			th handle
+		each val, index in posts
+			tr
+				td= index + 1
+				td= val.name
+				td= val.author
+				td= val.content
+				td
+					a detail
+					a delete
+					a update
+
