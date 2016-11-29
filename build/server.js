@@ -20,6 +20,7 @@ app.use(convert(logger()));
 app.use(require('koa-static')(__dirname + '/../static'));
 // db
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost:27017/blog');
 // router
 const fs = require('fs');

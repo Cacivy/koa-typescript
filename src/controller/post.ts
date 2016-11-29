@@ -1,5 +1,6 @@
 var router = require('koa-router')()
 import Post from '../model/post'
+import {resBody, resError, resInfo} from '../util/response'
 
 interface PostModel {
 	name?: String
@@ -9,14 +10,19 @@ interface PostModel {
 
 router.get('/:id', async (ctx, next) => {
 	let id = ctx.params.id
-	await Post.findById(id, (err, res) => {
-		ctx.body = res
+
+	await Post.findById(id).then((doc) => {
+		ctx.body = resBody(doc)
+	}).catch((reason) => {
+		ctx.body = resError(reason)
 	})
 })
 
 router.get('/', async (ctx, next) => {
-	await Post.find({}, (err, res) => {
-		ctx.body = res
+	await Post.find({}).then((docs) => {
+		ctx.body = resBody(docs)
+	}).catch((reason) => {
+		ctx.body = resError(reason)
 	})
 });
 
@@ -28,13 +34,11 @@ router.post('/', async (ctx, next) => {
 		content: body.content
 	}
 
-	await new Post(post).save((err, res) => {
-		if (res) {
-			ctx.body = res
-		}
+	await new Post(post).save().then((val) => {
+		ctx.body = resBody(val)
+	}).catch((reason) => {
+		ctx.body = resError(reason)
 	})
-
-	await ctx.redirect('/post')
 })
 
 router.put('/:id', async (ctx, next) => {
@@ -44,8 +48,20 @@ router.put('/:id', async (ctx, next) => {
 		author: body.author,
 		content: body.content
 	}
-	await Post.findByIdAndUpdate(id, post, (err, res) => {
-		ctx.body = 'ok'
+
+	await Post.findByIdAndUpdate(id, post).then((res) => {
+		ctx.body = resInfo('success')
+	}).catch((reason) => {
+		ctx.body = resError(reason)
+	})
+})
+
+router.delete('/:id', async (ctx, next) => {
+	let id = ctx.params.id
+	await Post.findByIdAndRemove(id).then((res) => {
+		ctx.body = resInfo('success')
+	}).catch((reason) => {
+		ctx.body = resError(reason)
 	})
 })
 

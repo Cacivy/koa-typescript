@@ -1,7 +1,10 @@
 import mongoose = require('mongoose')
 
 const PostSchema = {
-	name: String,
+	name: {
+		type: String,
+		required: true
+	},
 	author: String,
 	content: String
 };

@@ -9,15 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var router = require('koa-router')();
 const post_1 = require('../model/post');
+const response_1 = require('../util/response');
 router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let id = ctx.params.id;
-    yield post_1.default.findById(id, (err, res) => {
-        ctx.body = res;
+    yield post_1.default.findById(id).then((doc) => {
+        ctx.body = response_1.resBody(doc);
+    }).catch((reason) => {
+        ctx.body = response_1.resError(reason);
     });
 }));
 router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    yield post_1.default.find({}, (err, res) => {
-        ctx.body = res;
+    yield post_1.default.find({}).then((docs) => {
+        ctx.body = response_1.resBody(docs);
+    }).catch((reason) => {
+        ctx.body = response_1.resError(reason);
     });
 }));
 router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -27,12 +32,11 @@ router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
         author: body.author,
         content: body.content
     };
-    yield new post_1.default(post).save((err, res) => {
-        if (res) {
-            ctx.body = res;
-        }
+    yield new post_1.default(post).save().then((val) => {
+        ctx.body = response_1.resBody(val);
+    }).catch((reason) => {
+        ctx.body = response_1.resError(reason);
     });
-    yield ctx.redirect('/post');
 }));
 router.put('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let id = ctx.params.id;
@@ -41,8 +45,18 @@ router.put('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
         author: body.author,
         content: body.content
     };
-    yield post_1.default.findByIdAndUpdate(id, post, (err, res) => {
-        ctx.body = 'ok';
+    yield post_1.default.findByIdAndUpdate(id, post).then((res) => {
+        ctx.body = response_1.resInfo('success');
+    }).catch((reason) => {
+        ctx.body = response_1.resError(reason);
+    });
+}));
+router.delete('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
+    let id = ctx.params.id;
+    yield post_1.default.findByIdAndRemove(id).then((res) => {
+        ctx.body = response_1.resInfo('success');
+    }).catch((reason) => {
+        ctx.body = response_1.resError(reason);
     });
 }));
 module.exports = router;
