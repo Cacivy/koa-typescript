@@ -11,11 +11,16 @@
 - [x] logger
 - [x] 路由自动匹配controller
 - [x] 统一数据返回格式
+- [x] 集成[restc](https://github.com/ElemeFE/restc)
 - [ ] 自动完成api文档
 
 ### dev
 
 ```
+# initialize
+npm i -g typescript typings
+
+# install
 npm i & typings i
 
 # watch&build typescript

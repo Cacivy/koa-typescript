@@ -12,14 +12,16 @@ app.use(views(__dirname + '/../views', {
 }))
 
 // 中间件
-const convert = require('koa-convert')
-const json = require('koa-json')
-const bodyparser = require('koa-bodyparser')()
-const logger = require('koa-logger')
-app.use(convert(bodyparser))
+const convert = require('koa-convert') // 转换为2.0
+const json = require('koa-json') // ctx.body = {a: 1}
+import bodyparser = require('koa-bodyparser') // ctx.request.body
+const logger = require('koa-logger') // print console
+app.use(convert(bodyparser()))
 app.use(convert(json()))
 app.use(convert(logger()))
 app.use(require('koa-static')(__dirname + '/../static'))
+const restc = require('restc');
+app.use(restc.koa2());
 
 // db
 import mongoose = require('mongoose')

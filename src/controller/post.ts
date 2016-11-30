@@ -30,9 +30,9 @@ router.get('/:id', async (ctx, next) => {
 router.get('/', async (ctx, next) => {
 	let path = url.parse(ctx.request.url, true)
 	let query:Query = path.query as Query
-	let start = (+query.page - 1) * +query.pagesize;
+	let start:number = (+query.page - 1) * +query.pagesize;
 
-	let total = await Post.count({}).then((res: number) => {
+	let total:number = await Post.count({}).then((res: number) => {
 		return res
 	})
 	await Post.find()
@@ -61,15 +61,14 @@ router.post('/', async (ctx, next) => {
 	})
 })
 
-router.put('/:id', async (ctx, next) => {
-	let id = ctx.params.id
+router.put('/', async (ctx, next) => {
 	let body = ctx.request.body
-	let post:PostModel = {
+	let post:PostModel = {1
 		author: body.author,
 		content: body.content
 	}
 
-	await Post.findByIdAndUpdate(id, post).then((res) => {
+	await Post.findByIdAndUpdate(body.id, post).then((res) => {
 		ctx.body = resInfo('success')
 	}).catch((reason) => {
 		ctx.body = resError(reason)

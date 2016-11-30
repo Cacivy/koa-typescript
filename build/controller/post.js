@@ -2,16 +2,16 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const koaRouter = require('koa-router');
+const koaRouter = require("koa-router");
 const router = new koaRouter();
-const url = require('url');
-const post_1 = require('../model/post');
-const response_1 = require('../util/response');
+const url = require("url");
+const post_1 = require("../model/post");
+const response_1 = require("../util/response");
 router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let id = ctx.params.id;
     yield post_1.default.findById(id).then((doc) => {
@@ -50,14 +50,12 @@ router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
         ctx.body = response_1.resError(reason);
     });
 }));
-router.put('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    let id = ctx.params.id;
+router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let body = ctx.request.body;
-    let post = {
-        author: body.author,
+    let post = { 1: author, body: .author,
         content: body.content
     };
-    yield post_1.default.findByIdAndUpdate(id, post).then((res) => {
+    yield post_1.default.findByIdAndUpdate(body.id, post).then((res) => {
         ctx.body = response_1.resInfo('success');
     }).catch((reason) => {
         ctx.body = response_1.resError(reason);
