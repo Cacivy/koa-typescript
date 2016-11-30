@@ -30,6 +30,8 @@ tsc
 npm run dev
 ```
 
+> 推荐使用[VS Code](https://code.visualstudio.com), 以便于获得最好的typescript开发体验
+
 ### directory
 
 ```
