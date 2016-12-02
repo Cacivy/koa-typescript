@@ -63,7 +63,7 @@ router.post('/', async (ctx, next) => {
 
 router.put('/', async (ctx, next) => {
 	let body = ctx.request.body
-	let post:PostModel = {1
+	let post:PostModel = {
 		author: body.author,
 		content: body.content
 	}

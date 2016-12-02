@@ -52,7 +52,8 @@ router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
 }));
 router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let body = ctx.request.body;
-    let post = { 1: author, body: .author,
+    let post = {
+        author: body.author,
         content: body.content
     };
     yield post_1.default.findByIdAndUpdate(body.id, post).then((res) => {
