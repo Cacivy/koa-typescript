@@ -19,7 +19,7 @@ const logger = (type: LogType, msg: any) => {
 	------------------------------
 	`)
 
-	let path = `${__dirname}'/../../logs/${day}.txt`
+	let path = `${__dirname}'/../../logs/${day}.log`
 	fs.readFile(path, (err, data:Buffer) => {
 		if (!data) {
 			fs.writeFileSync(path, buf)
