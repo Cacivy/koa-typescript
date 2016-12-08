@@ -23,7 +23,7 @@ router.get('/:id', async (ctx, next) => {
 	await Post.findById(id).then((doc) => {
 		ctx.body = resBody(doc)
 	}).catch((reason) => {
-		ctx.body = resError(reason)
+		ctx.body = resError(ctx.request.url, reason)
 	})
 })
 
@@ -42,7 +42,7 @@ router.get('/', async (ctx, next) => {
 	.then((docs) => {
 		ctx.body = resBody(docs, total)
 	}).catch((reason) => {
-		ctx.body = resError(reason)
+		ctx.body = resError(ctx.request.url,reason)
 	})
 });
 
@@ -57,7 +57,7 @@ router.post('/', async (ctx, next) => {
 	await new Post(post).save().then((val) => {
 		ctx.body = resBody(val)
 	}).catch((reason) => {
-		ctx.body = resError(reason)
+		ctx.body = resError(ctx.request.url, reason)
 	})
 })
 
@@ -71,7 +71,7 @@ router.put('/', async (ctx, next) => {
 	await Post.findByIdAndUpdate(body.id, post).then((res) => {
 		ctx.body = resInfo('success')
 	}).catch((reason) => {
-		ctx.body = resError(reason)
+		ctx.body = resError(ctx.request.url, reason)
 	})
 })
 
@@ -80,7 +80,7 @@ router.delete('/:id', async (ctx, next) => {
 	await Post.findByIdAndRemove(id).then((res) => {
 		ctx.body = resInfo('success')
 	}).catch((reason) => {
-		ctx.body = resError(reason)
+		ctx.body = resError(ctx.request.url, reason)
 	})
 })
 

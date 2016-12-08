@@ -17,7 +17,7 @@ router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     yield post_1.default.findById(id).then((doc) => {
         ctx.body = response_1.resBody(doc);
     }).catch((reason) => {
-        ctx.body = response_1.resError(reason);
+        ctx.body = response_1.resError(ctx.request.url, reason);
     });
 }));
 router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
         .then((docs) => {
         ctx.body = response_1.resBody(docs, total);
     }).catch((reason) => {
-        ctx.body = response_1.resError(reason);
+        ctx.body = response_1.resError(ctx.request.url, reason);
     });
 }));
 router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -47,7 +47,7 @@ router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     yield new post_1.default(post).save().then((val) => {
         ctx.body = response_1.resBody(val);
     }).catch((reason) => {
-        ctx.body = response_1.resError(reason);
+        ctx.body = response_1.resError(ctx.request.url, reason);
     });
 }));
 router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -59,7 +59,7 @@ router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     yield post_1.default.findByIdAndUpdate(body.id, post).then((res) => {
         ctx.body = response_1.resInfo('success');
     }).catch((reason) => {
-        ctx.body = response_1.resError(reason);
+        ctx.body = response_1.resError(ctx.request.url, reason);
     });
 }));
 router.delete('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -67,7 +67,7 @@ router.delete('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* (
     yield post_1.default.findByIdAndRemove(id).then((res) => {
         ctx.body = response_1.resInfo('success');
     }).catch((reason) => {
-        ctx.body = response_1.resError(reason);
+        ctx.body = response_1.resError(ctx.request.url, reason);
     });
 }));
 module.exports = router;

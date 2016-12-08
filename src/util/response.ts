@@ -4,7 +4,7 @@ export const resBody = (body:any=null, total:number=0, iserror:boolean=false, ms
 	return {
 		data: {
 			result: body,
-			total: total
+		 	total: total
 		},
 		iserror: iserror ? 1 : 0,
 		msg: msg,
@@ -12,8 +12,8 @@ export const resBody = (body:any=null, total:number=0, iserror:boolean=false, ms
 	}
 }
 
-export const resError = (msg:any, code:number=200) => {
-	logger(LogType.error, msg)
+export const resError = (url:string, msg:any, code:number=200) => {
+	logger(LogType.error, msg, url)
 	return resBody(null, 0, true, msg.message, code)
 }
 
