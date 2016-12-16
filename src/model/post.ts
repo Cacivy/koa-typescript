@@ -1,12 +1,16 @@
 import mongoose = require('mongoose')
 
 const PostSchema = {
-	name: {
+	title: {
 		type: String,
 		required: true
 	},
 	author: String,
-	content: String
+	content: String,
+	tag: Array,
+	category: String,
+	date: Date,
+	delivery: Boolean
 };
 
 const Post = mongoose.model('Post', new mongoose.Schema(PostSchema))

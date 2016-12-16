@@ -5,16 +5,22 @@ import Post from '../model/post'
 import {resBody, resError, resInfo} from '../util/response'
 
 interface PostModel {
-	name?: String
+	title?: String
 	author: String
 	content: String
+	tag: Array<String>
+	category: String
+	date: Date
+	delivery: Boolean
 }
 
 interface Query {
-	limit: number
 	sort?: string
-	page: number
-	pagesize: number
+	currentPage: number
+	pageSize: number
+	startTime: string
+	endTime: string
+	title: string
 }
 
 router.get('/:id', async (ctx, next) => {
@@ -30,15 +36,30 @@ router.get('/:id', async (ctx, next) => {
 router.get('/', async (ctx, next) => {
 	let path = url.parse(ctx.request.url, true)
 	let query:Query = path.query as Query
-	let start:number = (+query.page - 1) * +query.pagesize;
+	let start:number = (+query.currentPage - 1) * +query.pageSize;
 
-	let total:number = await Post.count({}).then((res: number) => {
+	let where:any = {}
+
+	if (query.startTime || query.endTime) {
+		where.date = {}
+		if (query.startTime)
+		where.date.$gte = new Date(query.startTime)
+		if (query.endTime)
+		where.date.$lte = new Date(query.endTime)
+	}
+	if (query.title) {
+		where.title = new RegExp(query.title)
+	}
+
+	let total:number = await Post.find(where).count({}).then((res: number) => {
 		return res
 	})
-	await Post.find()
+
+	await Post
+	.find(where)
 	.skip(start)
-	.limit(+query.limit)
-	.sort(query.sort)
+	.limit(+query.pageSize)
+	.sort({date : -1})
 	.then((docs) => {
 		ctx.body = resBody(docs, total)
 	}).catch((reason) => {
@@ -49,9 +70,13 @@ router.get('/', async (ctx, next) => {
 router.post('/', async (ctx, next) => {
 	let body = ctx.request.body
 	var post: PostModel = {
-		name: body.name,
+		title: body.title,
 		author: body.author,
-		content: body.content
+		content: body.content,
+		tag: body.tag,
+		category: body.category,
+		date: body.date,
+		delivery: body.delivery
 	}
 
 	await new Post(post).save().then((val) => {
@@ -65,11 +90,15 @@ router.put('/', async (ctx, next) => {
 	let body = ctx.request.body
 	let post:PostModel = {
 		author: body.author,
-		content: body.content
+		content: body.content,
+		tag: body.tag,
+		category: body.category,
+		date: body.date,
+		delivery: body.delivery
 	}
 
-	await Post.findByIdAndUpdate(body.id, post).then((res) => {
-		ctx.body = resInfo('success')
+	await Post.findByIdAndUpdate(body._id, post).then((res) => {
+		ctx.body = resInfo(ctx.request.url, 'success')
 	}).catch((reason) => {
 		ctx.body = resError(ctx.request.url, reason)
 	})
@@ -78,7 +107,7 @@ router.put('/', async (ctx, next) => {
 router.delete('/:id', async (ctx, next) => {
 	let id = ctx.params.id
 	await Post.findByIdAndRemove(id).then((res) => {
-		ctx.body = resInfo('success')
+		ctx.body = resInfo(ctx.request.url, 'success')
 	}).catch((reason) => {
 		ctx.body = resError(ctx.request.url, reason)
 	})

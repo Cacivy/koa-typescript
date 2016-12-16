@@ -13,10 +13,12 @@ app.use(views(__dirname + '/../views', {
 // 中间件
 const convert = require('koa-convert'); // 转换为2.0
 const json = require('koa-json'); // ctx.body = {a: 1}
+var cors = require('koa-cors'); // cors
 const bodyparser = require("koa-bodyparser"); // ctx.request.body
 const logger = require('koa-logger'); // print console
 app.use(convert(bodyparser()));
 app.use(convert(json()));
+app.use(cors());
 app.use(convert(logger()));
 app.use(require('koa-static')(__dirname + '/../static'));
 const restc = require('restc');
@@ -34,7 +36,7 @@ fs.readdirSync(__dirname + '/controller').forEach((file) => {
     let name = path[0];
     if (name !== 'index' && path[path.length - 1] === 'js') {
         let route = require('./controller/' + name);
-        router.use(`/${name}`, route.routes(), route.allowedMethods());
+        router.use(`/api/${name}`, route.routes(), route.allowedMethods());
     }
 });
 const index = require("./controller/index");

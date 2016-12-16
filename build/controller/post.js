@@ -23,14 +23,26 @@ router.get('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
 router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let path = url.parse(ctx.request.url, true);
     let query = path.query;
-    let start = (+query.page - 1) * +query.pagesize;
-    let total = yield post_1.default.count({}).then((res) => {
+    let start = (+query.currentPage - 1) * +query.pageSize;
+    let where = {};
+    if (query.startTime || query.endTime) {
+        where.date = {};
+        if (query.startTime)
+            where.date.$gte = new Date(query.startTime);
+        if (query.endTime)
+            where.date.$lte = new Date(query.endTime);
+    }
+    if (query.title) {
+        where.title = new RegExp(query.title);
+    }
+    let total = yield post_1.default.find(where).count({}).then((res) => {
         return res;
     });
-    yield post_1.default.find()
+    yield post_1.default
+        .find(where)
         .skip(start)
-        .limit(+query.limit)
-        .sort(query.sort)
+        .limit(+query.pageSize)
+        .sort({ date: -1 })
         .then((docs) => {
         ctx.body = response_1.resBody(docs, total);
     }).catch((reason) => {
@@ -40,9 +52,13 @@ router.get('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
 router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let body = ctx.request.body;
     var post = {
-        name: body.name,
+        title: body.title,
         author: body.author,
-        content: body.content
+        content: body.content,
+        tag: body.tag,
+        category: body.category,
+        date: body.date,
+        delivery: body.delivery
     };
     yield new post_1.default(post).save().then((val) => {
         ctx.body = response_1.resBody(val);
@@ -54,10 +70,14 @@ router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let body = ctx.request.body;
     let post = {
         author: body.author,
-        content: body.content
+        content: body.content,
+        tag: body.tag,
+        category: body.category,
+        date: body.date,
+        delivery: body.delivery
     };
-    yield post_1.default.findByIdAndUpdate(body.id, post).then((res) => {
-        ctx.body = response_1.resInfo('success');
+    yield post_1.default.findByIdAndUpdate(body._id, post).then((res) => {
+        ctx.body = response_1.resInfo(ctx.request.url, 'success');
     }).catch((reason) => {
         ctx.body = response_1.resError(ctx.request.url, reason);
     });
@@ -65,7 +85,7 @@ router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
 router.delete('/:id', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let id = ctx.params.id;
     yield post_1.default.findByIdAndRemove(id).then((res) => {
-        ctx.body = response_1.resInfo('success');
+        ctx.body = response_1.resInfo(ctx.request.url, 'success');
     }).catch((reason) => {
         ctx.body = response_1.resError(ctx.request.url, reason);
     });
