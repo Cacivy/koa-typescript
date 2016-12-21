@@ -22,11 +22,11 @@ router.get('/', async (ctx, next) => {
 	let where:any = {}
 
 	if (query.startTime || query.endTime) {
-		where.date = {}
+		where.time = {}
 		if (query.startTime)
-		where.date.$gte = new Date(query.startTime)
+		where.time.$gte = new Date(query.startTime)
 		if (query.endTime)
-		where.date.$lte = new Date(query.endTime)
+		where.time.$lte = new Date(query.endTime)
 	}
 	if (query.filterType && query.filterText) {
 		where[query.filterType] = new RegExp(query.filterText)
@@ -40,7 +40,7 @@ router.get('/', async (ctx, next) => {
 	.find(where)
 	.skip(start)
 	.limit(+query.pageSize)
-	.sort({date : -1})
+	.sort({time : -1})
 	.then((docs) => {
 		ctx.body = resBody(docs, total)
 	}).catch((reason) => {

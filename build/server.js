@@ -1,7 +1,9 @@
 "use strict";
 const Koa = require('koa');
 const app = new Koa();
+const response_1 = require("./util/response");
 app.on('error', (err, ctx) => {
+    response_1.resError(ctx.request.url, err);
     console.log(err);
     logger.error('server error', err, ctx);
 });

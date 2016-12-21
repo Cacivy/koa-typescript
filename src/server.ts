@@ -1,6 +1,8 @@
 const Koa = require('koa')
 const app = new Koa()
+import {resBody, resError, resInfo} from './util/response'
 app.on('error', (err, ctx) => {
+	resError(ctx.request.url, err)
 	console.log(err)
 	logger.error('server error', err, ctx)
 })
