@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
+app.keys = ['secret', 'key'];
 import {resBody, resError, resInfo} from './util/response'
 app.on('error', (err, ctx) => {
 	resError(ctx.request.url, err)
@@ -19,13 +20,36 @@ const json = require('koa-json') // ctx.body = {a: 1}
 var cors = require('koa-cors'); // cors
 import bodyparser = require('koa-bodyparser') // ctx.request.body
 const logger = require('koa-logger') // print console
+var session = require('koa-session'); // session
+var CONFIG = {
+  key: 'cacivy', /** (string) cookie key (default is koa:sess) */
+  maxAge: 1000*60*60*12, /** (number) maxAge in ms (default is 1 days) */
+  overwrite: true, /** (boolean) can overwrite or not (default true) */
+  httpOnly: true, /** (boolean) httpOnly or not (default true) */
+  signed: true, /** (boolean) signed or not (default true) */
+};
+app.use(convert(session(CONFIG, app)));
 app.use(convert(bodyparser()))
 app.use(convert(json()))
-app.use(cors())
+app.use(cors({credentials: true}))
 app.use(convert(logger()))
 app.use(require('koa-static')(__dirname + '/../static'))
 const restc = require('restc');
 app.use(restc.koa2());
+
+// user valid
+app.use(async (ctx, next) => {
+  if (ctx.request.url === '/api/login') {
+	  await next();
+	} else if (ctx.request.url === '/api/user' && ctx.session.user) {
+			ctx.body = resBody(JSON.parse(ctx.session.user))
+	} else if (ctx.session.isNew || !ctx.session.user) {
+			ctx.response.status = 403
+			ctx.body = resError(ctx.request.url, '未登录')
+  } else {
+		await next();
+	}
+});
 
 // db
 import mongoose = require('mongoose')
@@ -50,7 +74,7 @@ app.use(router.routes(), router.allowedMethods());
 
 // server
 import http = require('http')
-var port = process.env.PORT || '8080'
+var port = process.env.PORT || '8085'
 var server = http.createServer(app.callback())
 server.listen(port)
 server.on('listen', () => {

@@ -1,0 +1,25 @@
+import koaRouter = require('koa-router')
+const router = new koaRouter()
+import url = require('url')
+import {resBody, resError, resInfo} from '../util/response'
+
+interface UserModel {
+	username: string
+	password: string
+}
+
+router.post('/', async (ctx, next) => {
+	let body = ctx.request.body
+	let user:UserModel = {
+		username: body.username,
+		password: body.password
+	}
+	if (user.username === 'admin' && user.password === 'admin') {
+		ctx.session.user = JSON.stringify(user)
+		ctx.body = resBody(user, 0, false, '')
+	} else {
+		ctx.body = resBody({}, 0, true, '用户或密码不正确')
+	}
+})
+
+module.exports = router;

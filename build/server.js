@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
 const Koa = require('koa');
 const app = new Koa();
+app.keys = ['secret', 'key'];
 const response_1 = require("./util/response");
 app.on('error', (err, ctx) => {
     response_1.resError(ctx.request.url, err);
@@ -18,13 +27,38 @@ const json = require('koa-json'); // ctx.body = {a: 1}
 var cors = require('koa-cors'); // cors
 const bodyparser = require("koa-bodyparser"); // ctx.request.body
 const logger = require('koa-logger'); // print console
+var session = require('koa-session'); // session
+var CONFIG = {
+    key: 'cacivy',
+    maxAge: 1000 * 60 * 60 * 12,
+    overwrite: true,
+    httpOnly: true,
+    signed: true,
+};
+app.use(convert(session(CONFIG, app)));
 app.use(convert(bodyparser()));
 app.use(convert(json()));
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(convert(logger()));
 app.use(require('koa-static')(__dirname + '/../static'));
 const restc = require('restc');
 app.use(restc.koa2());
+// user valid
+app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+    if (ctx.request.url === '/api/login') {
+        yield next();
+    }
+    else if (ctx.request.url === '/api/user' && ctx.session.user) {
+        ctx.body = response_1.resBody(JSON.parse(ctx.session.user));
+    }
+    else if (ctx.session.isNew || !ctx.session.user) {
+        ctx.response.status = 403;
+        ctx.body = response_1.resError(ctx.request.url, '未登录');
+    }
+    else {
+        yield next();
+    }
+}));
 // db
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
@@ -46,7 +80,7 @@ router.use('/', index.routes(), index.allowedMethods());
 app.use(router.routes(), router.allowedMethods());
 // server
 const http = require("http");
-var port = process.env.PORT || '8080';
+var port = process.env.PORT || '8085';
 var server = http.createServer(app.callback());
 server.listen(port);
 server.on('listen', () => {
