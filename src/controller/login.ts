@@ -15,6 +15,7 @@ router.post('/', async (ctx, next) => {
 		password: body.password
 	}
 	if (user.username === 'admin' && user.password === 'admin') {
+		delete user.password
 		ctx.session.user = JSON.stringify(user)
 		ctx.body = resBody(user, 0, false, '')
 	} else {

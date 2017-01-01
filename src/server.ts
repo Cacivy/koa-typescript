@@ -40,7 +40,7 @@ app.use(restc.koa2());
 // user valid
 app.use(async (ctx, next) => {
   if (ctx.request.url === '/api/login') {
-	  await next();
+	  await next()
 	} else if (ctx.request.url === '/api/user' && ctx.session.user) {
 			ctx.body = resBody(JSON.parse(ctx.session.user))
 	} else if (ctx.session.isNew || !ctx.session.user) {
