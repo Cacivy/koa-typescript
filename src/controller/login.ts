@@ -19,7 +19,8 @@ router.post('/', async (ctx, next) => {
 		ctx.session.user = JSON.stringify(user)
 		ctx.body = resBody(user, 0, false, '')
 	} else {
-		ctx.body = resBody({}, 0, true, '用户或密码不正确')
+		ctx.response.status = 401
+		ctx.body = resBody({}, 0, true, '用户名或密码不正确')
 	}
 })
 

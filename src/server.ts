@@ -20,6 +20,16 @@ const json = require('koa-json') // ctx.body = {a: 1}
 var cors = require('koa-cors'); // cors
 import bodyparser = require('koa-bodyparser') // ctx.request.body
 const logger = require('koa-logger') // print console
+const multer = require('koa-multer'); // upload
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'static/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`)
+  }
+})
+const upload = multer({storage})
 var session = require('koa-session'); // session
 var CONFIG = {
   key: 'cacivy', /** (string) cookie key (default is koa:sess) */
@@ -39,7 +49,7 @@ app.use(restc.koa2());
 
 // user valid
 app.use(async (ctx, next) => {
-  if (ctx.request.url === '/api/login') {
+	if (['/api/login', '/api/upload'].indexOf(ctx.request.url) > -1) {
 	  await next()
 	} else if (ctx.request.url === '/api/user' && ctx.session.user) {
 			ctx.body = resBody(JSON.parse(ctx.session.user))
@@ -71,6 +81,10 @@ fs.readdirSync(__dirname + '/controller').forEach((file) => {
 import index = require('./controller/index');
 router.use('/', index.routes(), index.allowedMethods());
 app.use(router.routes(), router.allowedMethods());
+router.post('/api/upload', upload.single('upfiles'), async (ctx, next) => {
+	  const {originalname, path, mimetype} = ctx.req.file;
+    ctx.body = resBody(path)
+});
 
 // server
 import http = require('http')
