@@ -1,7 +1,7 @@
 import koaRouter = require('koa-router')
 const router = new koaRouter()
 import url = require('url')
-import {resBody, resError, resInfo} from '../util/response'
+import {resBody, resError, resInfo} from '../../util/response'
 
 interface UserModel {
 	username: string

@@ -55,11 +55,8 @@ const restc = require('restc');
 app.use(restc.koa2());
 // user valid
 app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    if (['/api/login', '/api/upload'].indexOf(ctx.request.url) > -1) {
+    if (ctx.request.url.indexOf('/api/user') > -1) {
         yield next();
-    }
-    else if (ctx.request.url === '/api/user' && ctx.session.user) {
-        ctx.body = response_1.resBody(JSON.parse(ctx.session.user));
     }
     else if (ctx.session.isNew || !ctx.session.user) {
         ctx.response.status = 403;
@@ -77,16 +74,30 @@ mongoose.connect('mongodb://localhost:27017/blog');
 const fs = require("fs");
 const koarouter = require("koa-router");
 const router = new koarouter();
-fs.readdirSync(__dirname + '/controller').forEach((file) => {
-    let path = file.split('.');
-    let name = path[0];
-    if (name !== 'index' && path[path.length - 1] === 'js') {
-        let route = require('./controller/' + name);
-        router.use(`/api/${name}`, route.routes(), route.allowedMethods());
-    }
-});
-const index = require("./controller/index");
-router.use('/', index.routes(), index.allowedMethods());
+// 递归读取controller,目前只支持二级目录
+function readdirToRouter(child = '') {
+    let path = `${__dirname}/controller${child ? `/${child}` : ''}`;
+    fs.readdirSync(path).forEach((file) => {
+        let path = file.split('.');
+        let name = path[0];
+        if (path.length > 1) {
+            if (path[path.length - 1] === 'js') {
+                let child_path = child ? `${child}/` : '';
+                let route = require(`./controller/${child_path}${name}`);
+                if (name === 'index') {
+                    router.use(`/api/${child}`, route.routes(), route.allowedMethods());
+                }
+                else {
+                    router.use(`/api/${child_path}${name}`, route.routes(), route.allowedMethods());
+                }
+            }
+        }
+        else {
+            readdirToRouter(file);
+        }
+    });
+}
+readdirToRouter();
 app.use(router.routes(), router.allowedMethods());
 router.post('/api/upload', upload.single('upfiles'), (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     const { originalname, path, mimetype } = ctx.req.file;
