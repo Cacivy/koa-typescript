@@ -8,8 +8,9 @@ import {convertToDate} from '../util/date'
 
 interface Option {
 	label?: String
-	data: Array<Number | String>
-	labels: Array<String>
+	data?: Array<Number | String>
+	labels?: Array<String>
+	list?: Array<Array<string | number>>
 }
 
 interface DataModel {
@@ -21,11 +22,26 @@ interface DataModel {
 enum ChartType {
 	pie,
 	doughnut,
-	line
+	line,
+	word
 }
 
 router.get('/', async (ctx, next) => {
 	let arr = []
+	await Post.aggregate({
+			$group:{_id :"$delivery" ,count:{$sum:1}}
+	}).exec((err, res:any) => {
+		let obj: DataModel = {
+			title: '文章数据',
+			type: ChartType[ChartType.pie],
+			options: {
+				data: res.map(x => x.count),
+				labels: res.map(x => x._id ? '已发布' : '未发布')
+			}
+		}
+		arr.push(obj)
+	})
+
 	await Post.aggregate({
 			$group:{_id :"$category" ,count:{$sum:1}}
 	}).exec((err, res:any) => {
@@ -44,15 +60,30 @@ router.get('/', async (ctx, next) => {
 		{$unwind: "$tag" },{
 			$group:{_id :"$tag" ,count:{$sum:1}}
 	}]).exec((err, res:any) => {
+		let data = res.map(x => x.count)
+		let labels = res.map(x => x._id)
 		let obj: DataModel = {
 			title: '标签数据',
 			type: ChartType[ChartType.doughnut],
 			options: {
-				data: res.map(x => x.count),
-				labels: res.map(x => x._id)
+				data: data,
+				labels: labels
+			}
+		}
+		// list
+		let list:Array<Array<number | string>> = []
+		data.forEach((x:number ,i:number) => {
+			list.push([labels[i], x * 20])
+		})
+		let obj2: DataModel = {
+			title: '标签云',
+			type: ChartType[ChartType.word],
+			options: {
+				list: list
 			}
 		}
 		arr.push(obj)
+		arr.push(obj2)
 	})
 
 	await Post.aggregate([
