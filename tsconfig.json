@@ -12,6 +12,7 @@
     ],
     "exclude": [
         "views",
-        "static"
+        "static",
+				"typeings"
     ]
 }

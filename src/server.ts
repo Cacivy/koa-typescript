@@ -1,3 +1,4 @@
+/// <reference path="../typings/koa-session.d.ts" />
 const Koa = require('koa')
 const app = new Koa()
 app.keys = ['secret', 'key'];
@@ -48,14 +49,16 @@ const restc = require('restc');
 app.use(restc.koa2());
 
 // user valid
-app.use(async (ctx, next) => {
-	if (ctx.request.url.indexOf('/api/user') > -1) {
-		await next()
-	} else if (ctx.session.isNew || !ctx.session.user) {
-		ctx.response.status = 403
-		ctx.body = resError(ctx.request.url, '未登录')
+app.use(async (ctx:koarouter.IRouterContext, next) => {
+	if (ctx.request.method !== 'GET') {
+		if (ctx.request.url.indexOf('/api/user') > -1) {
+			await next()
+		} else if (ctx.session.isNew || !ctx.session.user) {
+			ctx.response.status = 403
+			ctx.body = resError(ctx.request.url, '未登录')
+		}
 	} else {
-		await next();
+		await next()
 	}
 });
 

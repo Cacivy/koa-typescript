@@ -55,12 +55,14 @@ const restc = require('restc');
 app.use(restc.koa2());
 // user valid
 app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    if (ctx.request.url.indexOf('/api/user') > -1) {
-        yield next();
-    }
-    else if (ctx.session.isNew || !ctx.session.user) {
-        ctx.response.status = 403;
-        ctx.body = response_1.resError(ctx.request.url, '未登录');
+    if (ctx.request.method !== 'GET') {
+        if (ctx.request.url.indexOf('/api/user') > -1) {
+            yield next();
+        }
+        else if (ctx.session.isNew || !ctx.session.user) {
+            ctx.response.status = 403;
+            ctx.body = response_1.resError(ctx.request.url, '未登录');
+        }
     }
     else {
         yield next();
