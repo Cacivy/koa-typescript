@@ -6,7 +6,7 @@ import { resBody, resError, resInfo } from './util/response'
 app.on('error', (err, ctx) => {
 	resError(ctx.request.url, err)
 	console.log(err)
-	logger.error('server error', err, ctx)
+	// logger.error('server error', err, ctx)
 })
 
 // views
@@ -49,17 +49,16 @@ const restc = require('restc');
 app.use(restc.koa2());
 
 // user valid
-app.use(async (ctx:koarouter.IRouterContext, next) => {
+app.use(async (ctx: koarouter.IRouterContext, next) => {
 	if (ctx.request.method !== 'GET') {
-		if (ctx.request.url.indexOf('/api/user') > -1) {
-			await next()
-		} else if (ctx.session.isNew || !ctx.session.user) {
-			ctx.response.status = 403
-			ctx.body = resError(ctx.request.url, '未登录')
+		if (ctx.session.isNew || !ctx.session.user) {
+			if (ctx.request.url.indexOf('/api/user') === -1) {
+				ctx.response.status = 403
+				ctx.body = resError(ctx.request.url, '未登录')
+			}
 		}
-	} else {
-		await next()
 	}
+	await next()
 });
 
 // db

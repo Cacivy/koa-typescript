@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
+/// <reference path="../typings/koa-session.d.ts" />
 const Koa = require('koa');
 const app = new Koa();
 app.keys = ['secret', 'key'];
@@ -14,7 +15,7 @@ const response_1 = require("./util/response");
 app.on('error', (err, ctx) => {
     response_1.resError(ctx.request.url, err);
     console.log(err);
-    logger.error('server error', err, ctx);
+    // logger.error('server error', err, ctx)
 });
 // views
 const views = require('koa-views');
@@ -56,17 +57,14 @@ app.use(restc.koa2());
 // user valid
 app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
     if (ctx.request.method !== 'GET') {
-        if (ctx.request.url.indexOf('/api/user') > -1) {
-            yield next();
-        }
-        else if (ctx.session.isNew || !ctx.session.user) {
-            ctx.response.status = 403;
-            ctx.body = response_1.resError(ctx.request.url, '未登录');
+        if (ctx.session.isNew || !ctx.session.user) {
+            if (ctx.request.url.indexOf('/api/user') === -1) {
+                ctx.response.status = 403;
+                ctx.body = response_1.resError(ctx.request.url, '未登录');
+            }
         }
     }
-    else {
-        yield next();
-    }
+    yield next();
 }));
 // db
 const mongoose = require("mongoose");
