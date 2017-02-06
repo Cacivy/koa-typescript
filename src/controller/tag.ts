@@ -9,6 +9,46 @@ interface TagModel {
 	date: Date
 }
 
+/**
+ * @api {GET} http://localhost:8085/api/tag [获取所有标签]
+ * @apiGroup Tag
+ * @apiDescription 获取所有标签
+ * @apiUse CODE_200
+ * @apiUse CODE_500
+ * @apiSuccessExample {json} Success Data Example
+[
+    {
+      "_id": "585743f87dab573ef45f4841",
+      "text": "js",
+      "date": "2016-12-19T02:20:40.613Z",
+      "__v": 0
+    },
+    {
+      "_id": "5857445e7dab573ef45f4842",
+      "text": "css",
+      "date": "2016-12-19T02:22:22.337Z",
+      "__v": 0
+    },
+    {
+      "_id": "585744627dab573ef45f4843",
+      "text": "vue",
+      "date": "2016-12-19T02:22:26.133Z",
+      "__v": 0
+    },
+    {
+      "_id": "585744fd7dab573ef45f4844",
+      "text": "angular2",
+      "date": "2016-12-19T02:25:01.811Z",
+      "__v": 0
+    },
+    {
+      "_id": "585744ff7dab573ef45f4845",
+      "text": "react",
+      "date": "2016-12-19T02:25:03.463Z",
+      "__v": 0
+    }
+]
+ */
 router.get('/', async (ctx, next) => {
 	let path = url.parse(ctx.request.url, true)
 
@@ -25,6 +65,13 @@ router.get('/', async (ctx, next) => {
 	})
 })
 
+/**
+ * @api {POST} http://localhost:8085/api/category [添加标签]
+ * @apiGroup Tag
+ * @apiDescription 添加标签
+ * @apiUse CODE_200
+ * @apiUse CODE_500
+*/
 router.post('/', async (ctx, next) => {
 	let body = ctx.request.body
 	var tag: TagModel = {
@@ -39,7 +86,14 @@ router.post('/', async (ctx, next) => {
 	})
 })
 
-
+/**
+ * @api {DELETE} http://localhost:8085/api/category/:id [删除标签]
+ * @apiParam {Number} id Tag unique ID.
+ * @apiGroup Tag
+ * @apiDescription 删除标签
+ * @apiUse CODE_200
+ * @apiUse CODE_500
+*/
 router.delete('/:id', async (ctx, next) => {
 	let id = ctx.params.id
 	await Tag.findByIdAndRemove(id).then((res) => {

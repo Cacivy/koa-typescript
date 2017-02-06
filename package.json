@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "supervisor -w build ./build/server.js",
+		"doc": "apidoc -i build/controller/ -o doc/",
     "build": "tsc"
   },
   "author": "Cacivy",
