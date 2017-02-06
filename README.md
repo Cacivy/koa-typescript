@@ -30,6 +30,7 @@ tsc
 npm run dev
 
 # doc
+npm i apidoc -g
 npm run doc
 ```
 
