@@ -12,7 +12,7 @@
 - [x] 路由自动匹配controller
 - [x] 统一数据返回格式
 - [x] 集成[restc](https://github.com/ElemeFE/restc)
-- [x] 自动完成api文档
+- [x] 自动完成api文档[apidoc](https://github.com/apidoc/apidoc)
 
 ### dev
 
