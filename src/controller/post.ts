@@ -8,6 +8,7 @@ interface PostModel {
 	title?: String
 	author: String
 	content: String
+	html: String
 	tag: Array<String>
 	category: String
 	date: Date
@@ -119,6 +120,7 @@ router.post('/', async (ctx, next) => {
 		title: body.title,
 		author: body.author,
 		content: body.content,
+		html: body.html,
 		tag: body.tag,
 		category: body.category,
 		date: body.date,
@@ -144,6 +146,7 @@ router.put('/', async (ctx, next) => {
 	let post:PostModel = {
 		author: body.author,
 		content: body.content,
+		html: body.html,
 		tag: body.tag,
 		category: body.category,
 		date: body.date,

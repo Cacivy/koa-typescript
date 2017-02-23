@@ -101,6 +101,7 @@ router.post('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
         title: body.title,
         author: body.author,
         content: body.content,
+        html: body.html,
         tag: body.tag,
         category: body.category,
         date: body.date,
@@ -124,6 +125,7 @@ router.put('/', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     let post = {
         author: body.author,
         content: body.content,
+        html: body.html,
         tag: body.tag,
         category: body.category,
         date: body.date,

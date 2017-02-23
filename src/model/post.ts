@@ -7,6 +7,7 @@ const PostSchema = {
 	},
 	author: String,
 	content: String,
+	html: String,
 	tag: Array,
 	category: String,
 	date: Date,
