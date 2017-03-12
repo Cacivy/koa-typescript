@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 const PostSchema = {
     title: {
@@ -14,6 +15,5 @@ const PostSchema = {
     delivery: Boolean
 };
 const Post = mongoose.model('Post', new mongoose.Schema(PostSchema));
-Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Post;
 //# sourceMappingURL=post.js.map
