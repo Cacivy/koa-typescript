@@ -22,7 +22,6 @@ var cors = require('koa-cors'); // cors
 import bodyparser = require('koa-bodyparser') // ctx.request.body
 const logger = require('koa-logger') // print console
 const multer = require('koa-multer'); // upload
-var koaStatic = require('koa-static'); // static
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'static/uploads')
@@ -45,10 +44,11 @@ app.use(convert(bodyparser()))
 app.use(convert(json()))
 app.use(cors({ credentials: true }))
 app.use(convert(logger()))
-app.use(koaStatic(__dirname + '/../static'))
-app.use(koaStatic(__dirname + '/../doc'))
 const restc = require('restc');
 app.use(restc.koa2());
+var koaStatic = require('koa-static');
+app.use(koaStatic(__dirname + '/../static'))
+app.use(koaStatic(__dirname + '/../doc'))
 
 // user valid
 app.use(async (ctx: koarouter.IRouterContext, next) => {
@@ -66,7 +66,7 @@ app.use(async (ctx: koarouter.IRouterContext, next) => {
 // db
 import mongoose = require('mongoose')
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost:27017/blog')
+mongoose.connect('mongodb://mongodb:27017/blog')
 
 // router
 import fs = require('fs')

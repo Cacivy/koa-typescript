@@ -30,7 +30,6 @@ var cors = require('koa-cors'); // cors
 const bodyparser = require("koa-bodyparser"); // ctx.request.body
 const logger = require('koa-logger'); // print console
 const multer = require('koa-multer'); // upload
-var koaStatic = require('koa-static'); // static
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'static/uploads');
@@ -53,10 +52,11 @@ app.use(convert(bodyparser()));
 app.use(convert(json()));
 app.use(cors({ credentials: true }));
 app.use(convert(logger()));
-app.use(koaStatic(__dirname + '/../static'));
-app.use(koaStatic(__dirname + '/../doc'));
 const restc = require('restc');
 app.use(restc.koa2());
+var koaStatic = require('koa-static');
+app.use(koaStatic(__dirname + '/../static'));
+app.use(koaStatic(__dirname + '/../doc'));
 // user valid
 app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
     if (ctx.request.method !== 'GET') {
@@ -72,7 +72,7 @@ app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
 // db
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/blog');
+mongoose.connect('mongodb://mongodb:27017/blog');
 // router
 const fs = require("fs");
 const koarouter = require("koa-router");

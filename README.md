@@ -17,6 +17,10 @@
 ### dev
 
 ```
+docker-compose up
+```
+
+```
 # initialize
 npm i -g typescript typings
 

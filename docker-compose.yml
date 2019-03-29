@@ -1,0 +1,19 @@
+version: '2.1'
+
+services:
+  mongodb:
+    image: "mongo"
+    restart: always
+    ports:
+      - 27017:27017
+
+
+  koa-typescript:
+    image: koa-typescript
+    build: .
+    environment:
+      NODE_ENV: production
+    ports:
+      - 8085:8085
+    depends_on:
+      - mongodb
